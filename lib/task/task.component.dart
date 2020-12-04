@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:ltodo/home/model/task.dart';
+import 'package:ltodo/shared/model/task.dart';
 
 class TaskComponent extends StatelessWidget {
   final Task task;
-  TaskComponent(this.task);
+  final onDelete;
+
+  TaskComponent(this.task, this.onDelete);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +16,7 @@ class TaskComponent extends StatelessWidget {
           onChanged: (bool value) {},
         ),
         Text(
-          task.titulo,
+          task.id.toString(),
           style: TextStyle(fontSize: 28, fontFamily: 'Courier New'),
           textAlign: TextAlign.center,
         ),
@@ -22,7 +24,7 @@ class TaskComponent extends StatelessWidget {
           alignment: AlignmentDirectional.centerEnd,
           icon: Icon(Icons.delete),
           tooltip: 'remove task',
-          onPressed: () => null,
+          onPressed: () => onDelete(task.id),
         ),
       ],
     );
