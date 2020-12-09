@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ltodo/core/component/nav-drawer.component.dart';
+import 'package:ltodo/task/task-form.component.dart';
 import 'package:ltodo/task/task-list.component.dart';
-import 'package:ltodo/home/component/nav-drawer.component.dart';
 import 'package:ltodo/task/task.component.dart';
 import 'package:ltodo/shared/model/task.dart';
 import 'dart:async';
@@ -18,10 +19,10 @@ class _HomePageState extends State<HomePage> {
   List<Task> _tasks = [];
 
   _HomePageState() {
-    loadTasks();
+    _loadTasks();
   }
 
-  Future<void> insertTask(Task task) async {
+  Future<void> _insertTask(Task task) async {
     final Database db = await _database.instance;
 
     await db.insert(
@@ -29,10 +30,10 @@ class _HomePageState extends State<HomePage> {
       task.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    loadTasks();
+    _loadTasks();
   }
 
-  void loadTasks() async {
+  void _loadTasks() async {
     final Database db = await _database.instance;
 
     final List<Map<String, dynamic>> maps = await db.query('task');
@@ -41,14 +42,14 @@ class _HomePageState extends State<HomePage> {
       _tasks = List.generate(maps.length, (i) {
         return Task(
           id: maps[i]['id'],
-          titulo: maps[i]['titulo'],
-          descricao: maps[i]['descricao'],
+          title: maps[i]['title'],
+          description: maps[i]['description'],
         );
       });
     });
   }
 
-  Future<void> updateTask(Task task) async {
+  Future<void> _updateTask(Task task) async {
     final Database db = await _database.instance;
 
     await db.update(
@@ -57,10 +58,10 @@ class _HomePageState extends State<HomePage> {
       where: "id = ?",
       whereArgs: [task.id],
     );
-    loadTasks();
+    _loadTasks();
   }
 
-  Future<void> deleteTask(int id) async {
+  Future<void> _deleteTask(int id) async {
     final Database db = await _database.instance;
 
     await db.delete(
@@ -68,42 +69,34 @@ class _HomePageState extends State<HomePage> {
       where: "id = ?",
       whereArgs: [id],
     );
-    loadTasks();
+    _loadTasks();
+  }
+
+  _onTaskFormModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return TaskForm(_insertTask);
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData(
-          primaryColor: Colors.blueGrey[800],
-          fontFamily: 'Georgia',
-          textTheme: TextTheme(
-            headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-            headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-            bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-          ),
-        ),
-        title: 'L - TODO',
-        home: Scaffold(
-          drawer: NavDrawer(),
-          appBar: AppBar(
-            title: Text('L - TODO'),
-            centerTitle: true,
-          ),
-          body: TaskListComponent(
-              _tasks.map((e) => TaskComponent(e, deleteTask)).toList()),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              insertTask(
-                Task(
-                    id: DateTime.now().hashCode,
-                    titulo: 'AAAAAAAAAAAAAAAA',
-                    descricao: 'descricao task 1'),
-              );
-            },
-            child: Icon(Icons.plus_one),
-            backgroundColor: Colors.blueGrey,
-          ),
-        ));
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('L - TODO'),
+        centerTitle: true,
+      ),
+      body: TaskListComponent(
+          _tasks.map((e) => TaskComponent(e, _deleteTask)).toList()),
+      drawer: NavDrawer(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _onTaskFormModal(context);
+        },
+        child: Icon(Icons.add),
+      ),
+    );
   }
 }

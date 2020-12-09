@@ -34,7 +34,7 @@ class DatabaseHelper {
     }
     return await openDatabase(path, onCreate: (db, version) {
       return db.execute(
-        "CREATE TABLE task(id INTEGER PRIMARY KEY, titulo TEXT, descricao TEXT)",
+        "CREATE TABLE task(id INTEGER PRIMARY KEY, title TEXT, description TEXT)",
       );
     }, version: 1);
   }

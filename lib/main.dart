@@ -9,6 +9,24 @@ void main() {
 class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'L - TODO', home: HomePage());
+    return MaterialApp(
+      title: 'L - TODO',
+      theme: ThemeData(
+        primaryColor: Colors.brown[700],
+        accentColor: Colors.brown[900],
+        textTheme: ThemeData.light().textTheme.copyWith(
+              headline6: TextStyle(fontFamily: 'NerkoOne'),
+              bodyText1: TextStyle(fontFamily: 'AmaticSC'),
+              bodyText2: TextStyle(fontFamily: 'AmaticSC'),
+            ),
+        appBarTheme: AppBarTheme(
+          textTheme: ThemeData.light().textTheme.copyWith(
+                headline6: TextStyle(
+                    fontFamily: 'NerkoOne', fontSize: 30, color: Colors.white),
+              ),
+        ),
+      ),
+      home: HomePage(),
+    );
   }
 }

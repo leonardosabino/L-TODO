@@ -1,20 +1,22 @@
+import 'package:flutter/material.dart';
+
 class Task {
   int id;
-  String titulo;
-  String descricao;
+  String title;
+  String description;
 
-  Task({this.id, this.titulo, this.descricao});
+  Task({this.id, @required this.title, @required this.description});
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'titulo': titulo,
-      'descricao': descricao,
+      'title': title,
+      'description': description,
     };
   }
 
   @override
   String toString() {
-    return 'Dog{id: $id, name: $titulo, age: $descricao}';
+    return 'Dog{id: $id, name: $title, age: $description}';
   }
 }
